@@ -18,7 +18,13 @@ class Equipment {
     type:EquipmentType
 }
 
+class AddEquipment {
+    addEquipment(type:EquipmentType)
+    --
+}
+
 PlantGrid -- "0..n" PlantCell
+PlantGrid -- AddEquipment
 PlantCell -- "0..1" Equipment
 
 @enduml
