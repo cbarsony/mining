@@ -1,0 +1,24 @@
+@startuml
+
+class PlantGrid {
+    --
+    rows:PlantCell[][]
+}
+
+class PlantCell {
+    cellIndex:CellIndex
+    equipment:Equipment
+    emptyNeighbours:Object
+    addEquipment(cellIndex:CellIndex, direction:NeighbourDirection)
+    removeEquipment(cellIndex:CellIndex)
+    --
+}
+
+class Equipment {
+    type:EquipmentType
+}
+
+PlantGrid -- "0..n" PlantCell
+PlantCell -- "0..1" Equipment
+
+@enduml

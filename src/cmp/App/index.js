@@ -1,5 +1,7 @@
 import React from 'react'
 
+import {PlantGrid} from './PlantGrid'
+
 export const App = () => (
-  <div>Minealytics</div>
+  <PlantGrid/>
 )
