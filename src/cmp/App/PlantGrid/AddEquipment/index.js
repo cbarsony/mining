@@ -42,6 +42,17 @@ export class AddEquipment extends Component {
           <label htmlFor={cn.el(EquipmentType.BELT)}>belt</label>
         </div>
 
+        <div>
+          <input
+            type="radio"
+            name={EquipmentType.SPLITTER}
+            id={cn.el(EquipmentType.SPLITTER)}
+            checked={state.equipmentType === EquipmentType.SPLITTER}
+            onChange={this.onInputChange}
+          />
+          <label htmlFor={cn.el(EquipmentType.SPLITTER)}>splitter</label>
+        </div>
+
         <button
           onClick={() => props.addEquipment(state.equipmentType)}
           disabled={state.equipmentType === ''}
