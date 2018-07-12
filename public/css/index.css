@@ -1,4 +1,44 @@
+body {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#root {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
 #modalRoot {
     position: fixed;
     top: 0;
+}
+
+.App {
+    display: grid;
+    grid-template-columns: 200px auto;
+    height: 100%;
+}
+
+.App__Sidebar {
+    grid-column: 1/2;
+    background: #25496a;
+}
+
+.App__Content {
+    position: relative;
+    grid-column: 2/3;
+    background: #fff;
+    padding: 10px;
+}
+
+#canvas {
+    border: 1px solid #ccc;
+    box-shadow: 2px;
+    height: 100%;
 }

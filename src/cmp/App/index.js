@@ -4,9 +4,9 @@ export class App extends Component {
   componentDidMount() {
     const draw2d = window.draw2d
     const $ = window.jQuery
-    const dragme = $('#dragme').draggable()
+    $('#dragme').draggable()
 
-    const canvas = new draw2d.Canvas("gfx_holder")
+    const canvas = new draw2d.Canvas("canvas")
 
     canvas.add(new draw2d.shape.basic.Oval(), 100, 100)
 
@@ -17,7 +17,17 @@ export class App extends Component {
 
   render() {
     return (
-      <div>majom</div>
+      <div className="App">
+        <div className="App__Sidebar">
+          <div
+            id="dragme"
+            className="draw2d_droppable ui-draggable"
+          >drag me!</div>
+        </div>
+        <div className="App__Content">
+          <div id="canvas"></div>
+        </div>
+      </div>
     )
   }
 }
