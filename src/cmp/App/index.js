@@ -18,15 +18,22 @@ export class App extends Component {
   render() {
     return (
       <div className="App">
+
+        <div className="App__Content">
+          <div id="canvas"></div>
+        </div>
+
         <div className="App__Sidebar">
           <div
             id="dragme"
             className="draw2d_droppable ui-draggable"
           >drag me!</div>
         </div>
-        <div className="App__Content">
-          <div id="canvas"></div>
+
+        <div className="App__Header">
+          <h1>Minealytics</h1>
         </div>
+
       </div>
     )
   }
