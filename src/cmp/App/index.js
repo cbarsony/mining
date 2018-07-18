@@ -1,37 +1,102 @@
 import React, {Component} from 'react'
 
+import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
+import {Equipment} from 'cmp/Equipment'
+import {type as equipmentType} from 'cmp/Equipment/type'
+
+import './App.css'
+
+const draw2d = window.draw2d
+const $ = window.$
+
 export class App extends Component {
   componentDidMount() {
-    const draw2d = window.draw2d
-    const $ = window.jQuery
-    $('#dragme').draggable()
-
     const canvas = new draw2d.Canvas("canvas")
+    canvas.onDrop = (node, x, y) => {
+      const equipment = new equipmentType[node.data().type]()
 
-    canvas.add(new draw2d.shape.basic.Oval(), 100, 100)
+      const portTop = equipment.createPort('hybrid', new draw2d.layout.locator.TopLocator())
+      portTop.on('connect', (c, target) => {
+        target.connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
+      })
 
-    canvas.onDrop = function(node, x, y) {
-      canvas.add(new draw2d.shape.basic.Oval(), x, y)
+      const portRight = equipment.createPort('hybrid', new draw2d.layout.locator.RightLocator())
+      portRight.on('connect', (c, target) => {
+        target.connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
+      })
+
+      const portBottom = equipment.createPort('hybrid', new draw2d.layout.locator.BottomLocator())
+      portBottom.on('connect', (c, target) => {
+        target.connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
+      })
+
+      const portLeft = equipment.createPort('hybrid', new draw2d.layout.locator.LeftLocator())
+      portLeft.on('connect', (c, target) => {
+        target.connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
+      })
+
+      canvas.add(equipment, x, y)
     }
+
+    const writer = new draw2d.io.json.Writer()
+    $('#readyButton').on('click', () => {
+      writer.marshal(canvas, function(json) {
+        console.log(json)
+      })
+    })
   }
 
   render() {
     return (
       <div className="App">
 
-        <div className="App__Content">
-          <div id="canvas"></div>
+        <div className="App__Header">
+          <div className="App__Header_Heading">Minealytics</div>
         </div>
 
         <div className="App__Sidebar">
-          <div
-            id="dragme"
-            className="draw2d_droppable ui-draggable"
-          >drag me!</div>
+          <Tree>
+            <TreeNode label="Size Reduction">
+              <TreeNode label="Crushing"></TreeNode>
+              <TreeNode label="Grinding"></TreeNode>
+            </TreeNode>
+            <TreeNode label="Size Control">
+              <TreeNode label="Screening"></TreeNode>
+              <TreeNode label="Classification"></TreeNode>
+            </TreeNode>
+            <TreeNode label="Enrichment"></TreeNode>
+            <TreeNode label="Upgrading"></TreeNode>
+            <TreeNode label="Materials Handling">
+              <TreeNode label="Splitters"></TreeNode>
+              <TreeNode label="Storage">
+                <TreeLeaf>
+                  <Equipment
+                    label="Bin"
+                    type="bin"
+                  />
+                </TreeLeaf>
+              </TreeNode>
+              <TreeNode label="Discharging"></TreeNode>
+              <TreeNode label="Conveying">
+                <TreeLeaf>
+                  <Equipment
+                    label="Belt"
+                    type="belt"
+                  />
+                </TreeLeaf>
+              </TreeNode>
+              <TreeNode label="Stacking"></TreeNode>
+            </TreeNode>
+          </Tree>
+
+          <hr/>
+
+          <button id="readyButton">Ready</button>
+
         </div>
 
-        <div className="App__Header">
-          <h1>Minealytics</h1>
+        <div className="App__Content">
+          <div id="canvas"></div>
         </div>
 
       </div>
