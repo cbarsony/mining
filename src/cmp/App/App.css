@@ -1,35 +1,24 @@
 .App {
     display: grid;
-    grid-template-columns: 300px auto;
     grid-template-rows: 32px auto;
     height: 100%;
 }
 
 .App__Header {
-    grid-column: 1 / 3;
     grid-row: 1 / 2;
     background: #25496a;
     box-shadow: 2px 0 8px rgba(0,0,0,0.5);
     padding: 6px 12px;
 }
 
-.App__Header_Heading {
+.App__Header__Heading {
+    display: inline-block;
     font-size: 1.4em;
     font-weight: bold;
     color: #fff;
 }
 
-.App__Sidebar {
-    grid-column: 1/2;
-    grid-row: 2 / 3;
-    border-right: 1px solid #ccc;
-    box-shadow: 0 0 8px rgba(0,0,0,0.5);
-    padding: 16px;
-}
-
 .App__Content {
     position: relative;
-    grid-column: 2/3;
     grid-row: 2 / 3;
-    padding: 16px;
 }
