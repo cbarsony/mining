@@ -21,6 +21,7 @@ body {
 }
 
 #canvas {
+    position: relative;
     border: 1px solid #ccc;
     box-shadow: 2px;
     height: 100%;

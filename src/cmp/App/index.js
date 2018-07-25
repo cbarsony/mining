@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import makeBem from 'bem-cx'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
+import {} from 'cmp/Equipment/EquipmentSettings'
+
 import './App.css'
 import {PlannerPage} from './PlannerPage'
 import {UploaderPage} from './UploaderPage'
@@ -24,7 +26,7 @@ export class App extends Component {
             <Route
               exact
               path="/"
-              component={PlannerPage}
+              component={UploaderPage}
             />
             <Route
               path="/planner"
@@ -37,7 +39,6 @@ export class App extends Component {
           </div>
 
         </div>
-
       </Router>
     )
   }

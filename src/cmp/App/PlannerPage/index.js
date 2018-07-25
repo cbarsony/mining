@@ -1,9 +1,12 @@
 import React, {Component} from 'react'
 import makeBem from 'bem-cx'
+import {connect} from 'react-redux'
 
+import {addEquipment} from 'actions'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 import {Equipment} from 'cmp/Equipment'
 import {type as equipmentType} from 'cmp/Equipment/type'
+import {EquipmentSettings} from 'cmp/Equipment/EquipmentSettings'
 
 import './PlannerPage.css'
 
@@ -11,18 +14,7 @@ const cn = makeBem('PlannerPage')
 const draw2d = window.draw2d
 const $ = window.$
 
-export class PlannerPage extends Component {
-  state = {
-    planList: [
-      {
-        name: 'Plan 1',
-        isUnsaved: false,
-        data: null,
-      },
-    ],
-    editingPlanIndex: 0,
-  }
-
+class PlannerPageComponent extends Component {
   componentDidMount() {
     const canvas = new draw2d.Canvas("canvas")
     canvas.onDrop = (node, x, y) => {
@@ -49,7 +41,8 @@ export class PlannerPage extends Component {
       })
 
       canvas.add(equipment, x, y)
-      
+
+      this.props.addEquipment(equipment)
     }
 
     const writer = new draw2d.io.json.Writer()
@@ -61,7 +54,8 @@ export class PlannerPage extends Component {
   }
 
   render() {
-    const state = this.state
+    const props = this.props
+    const selectedEquipment = props.equipmentList.find(equipment => equipment.id === props.selectedEquipmentId)
 
     return (
       <div className={cn}>
@@ -103,20 +97,32 @@ export class PlannerPage extends Component {
 
           <hr/>
 
-          {state.planList.map((plan, index) => (
-            <div key={index}>
-              {plan.name}
-              {plan.isUnsaved && <button>Save</button>}
-            </div>
-          ))}
           <button id="readyButton">Ready</button>
+          {props.fileList.map((file, index) => (
+            <div key={index}>file: {file.name}</div>
+          ))}
         </div>
 
         <div className={cn.el('Planner')}>
           <div id="canvas"></div>
         </div>
 
+        {selectedEquipment && (
+          <EquipmentSettings
+            fileList={props.fileList}
+            equipment={selectedEquipment}
+            save={settings => {
+              debugger
+            }}
+          />
+        )}
+
       </div>
     )
   }
 }
+
+export const PlannerPage = connect(
+  state => state,
+  dispatch => ({addEquipment: equipment => dispatch(addEquipment(equipment))}),
+)(PlannerPageComponent)
