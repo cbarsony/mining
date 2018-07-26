@@ -12,3 +12,8 @@ export const selectEquipment = equipmentId => ({
   type: 'SELECT_EQUIPMENT',
   equipmentId,
 })
+
+export const savePlan = plan => ({
+  type: 'SAVE_PLAN',
+  plan,
+})

@@ -10,6 +10,7 @@ const initialState = {
   fileList: [],
   equipmentList: [],
   selectedEquipmentId: null,
+  plan: null,
 }
 
 const reducer = (state = initialState, action) => {
@@ -30,6 +31,12 @@ const reducer = (state = initialState, action) => {
       return update(state, {
         selectedEquipmentId: {
           $set: action.equipmentId,
+        },
+      })
+    case 'SAVE_PLAN':
+      return update(state, {
+        plan: {
+          $set: action.plan,
         },
       })
     default:

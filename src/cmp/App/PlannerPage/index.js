@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import makeBem from 'bem-cx'
 import {connect} from 'react-redux'
 
-import {addEquipment} from 'actions'
+import {addEquipment, savePlan} from 'actions'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 import {Equipment} from 'cmp/Equipment'
 import {type as equipmentType} from 'cmp/Equipment/type'
@@ -17,6 +17,8 @@ const $ = window.$
 class PlannerPageComponent extends Component {
   componentDidMount() {
     const canvas = new draw2d.Canvas("canvas")
+    const writer = new draw2d.io.json.Writer()
+
     canvas.onDrop = (node, x, y) => {
       const equipment = new equipmentType[node.data().type]()
 
@@ -42,10 +44,11 @@ class PlannerPageComponent extends Component {
 
       canvas.add(equipment, x, y)
 
-      this.props.addEquipment(equipment)
+      writer.marshal(canvas, plan => this.props.savePlan(plan))
+
+      // this.props.addEquipment(equipment)
     }
 
-    const writer = new draw2d.io.json.Writer()
     $('#readyButton').on('click', () => {
       writer.marshal(canvas, function(json) {
         console.log(json)
@@ -112,7 +115,7 @@ class PlannerPageComponent extends Component {
             fileList={props.fileList}
             equipment={selectedEquipment}
             save={settings => {
-              debugger
+              console.log(settings)
             }}
           />
         )}
@@ -124,5 +127,8 @@ class PlannerPageComponent extends Component {
 
 export const PlannerPage = connect(
   state => state,
-  dispatch => ({addEquipment: equipment => dispatch(addEquipment(equipment))}),
+  dispatch => ({
+    addEquipment: equipment => dispatch(addEquipment(equipment)),
+    savePlan: plan => dispatch(savePlan(plan)),
+  }),
 )(PlannerPageComponent)

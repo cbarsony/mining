@@ -57,22 +57,6 @@ export const type = {
     {
       this._super()
       this.installEditPolicy(new SelectionMenuPolicy())
-      this._fields = [
-        {
-          name: 'volume',
-          units: [
-            'm3',
-            'barrel',
-          ],
-        },
-        {
-          name: 'mass',
-          units: [
-            'kg',
-            'pound',
-          ],
-        },
-      ]
     },
     getSVG: function(){
       return `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50" height="50">
