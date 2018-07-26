@@ -4,6 +4,10 @@
     height: 100%;
 }
 
+.UploadPage i {
+    margin-right: 8px;
+}
+
 .UploadPage > * {
     padding: 16px;
     margin: 8px;
@@ -13,6 +17,11 @@
 
 .UploadPage__plan {
     grid-column: 1 / 2;
+}
+
+.UploadPage h2 {
+    margin-bottom: 16px;
+    font-weight: bold;
 }
 
 .UploadPage__fileUpload {
@@ -27,6 +36,39 @@
     border-radius: 4px;
 }
 
+.UploadPage__draggable {
+    display: inline-block;
+    margin: 8px 8px 8px 0;
+    padding: 8px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+
+.UploadPage__draggable:hover {
+    cursor: pointer;
+}
+
 .UploadPage__equipment {
     margin: 32px 0;
+}
+
+.UploadPage__equipment td > div {
+    margin-bottom: 4px;
+}
+
+.UploadPage table {
+    border-collapse: initial;
+    border-spacing: 8px;
+}
+
+.UploadPage table th {
+    font-weight: bold;
+}
+
+.UploadPage__fields td {
+    white-space: nowrap;
+}
+
+.UploadPage__toggleRows {
+    cursor: pointer;
 }

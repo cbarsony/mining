@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import makeBem from 'bem-cx'
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import {BrowserRouter as Router, Route, NavLink} from 'react-router-dom'
 
 import {} from 'cmp/Equipment/EquipmentSettings'
 
@@ -18,15 +18,21 @@ export class App extends Component {
 
           <div className={cn.el('Header')}>
             <div className={cn.el('Header').el('Heading')}>Minealytics</div>
-            <Link to="/planner">Planner</Link>
-            <Link to="/uploader">Uploader</Link>
+            <NavLink
+              to="/planner"
+              activeClassName="active"
+            >Planner</NavLink>
+            <NavLink
+              to="/uploader"
+              activeClassName="active"
+            >Uploader</NavLink>
           </div>
 
           <div className={cn.el('Content')}>
             <Route
               exact
               path="/"
-              component={UploaderPage}
+              component={PlannerPage}
             />
             <Route
               path="/planner"

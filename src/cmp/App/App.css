@@ -11,6 +11,17 @@
     padding: 6px 12px;
 }
 
+.App__Header a {
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 16px;
+    color: #fff;
+}
+
+.App__Header a.active {
+    text-decoration: underline;
+}
+
 .App__Header__Heading {
     display: inline-block;
     font-size: 1.4em;

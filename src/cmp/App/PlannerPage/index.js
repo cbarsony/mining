@@ -144,10 +144,7 @@ class PlannerPageComponent extends Component {
 
           <hr/>
 
-          <button id="readyButton">Ready</button>
-          {props.fileList.map((file, index) => (
-            <div key={index}>file: {file.name}</div>
-          ))}
+          <button id="readyButton">Save</button>
         </div>
 
         <div className={cn.el('Planner')}>

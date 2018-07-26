@@ -22,6 +22,7 @@ class UploaderPageComponent extends Component {
 
     const plan = (
       <div className={cn.el('plan')}>
+        <h2>Equipments</h2>
         {(!!props.plan && !!props.plan.length) && (
           <Tree>
             {props.plan.map((equipment, equipmentIndex) => (
@@ -29,36 +30,54 @@ class UploaderPageComponent extends Component {
                 key={equipmentIndex}
                 label={equipment.type + ` (${equipmentIndex + 1})`}
               >
-                {equipment.userData.fields.map((field, fieldIndex) => (
-                  <TreeLeaf key={fieldIndex}>
-                    <div className={cn.el('equipment')}>
-                      <span>{field.name}</span>
-                      {field.file ? (
-                        <span>
-                          <span>file: {field.file.name}, field: {field.file.headerField}</span>
-                          <select
-                            value={field.selectedUnitIndex}
-                            onChange={e => this.onUnitChange(e, equipmentIndex, fieldIndex)}
-                          >
-                            <option
-                              style={{display: 'inline-block'}}
-                              key={-1}
-                              value={-1}>choose unit</option>
-                            {field.units.map((unit, index) => (
-                              <option key={index} value={index}>{unit}</option>
-                            ))}
-                          </select>
-                        </span>
-                      ) : (
-                        <span
-                          className={cn.el('dropZone')}
-                          onDrop={e => this.onDrop(e, equipmentIndex, fieldIndex)}
-                          onDragOver={e => e.preventDefault()}
-                        >drop zone</span>
-                      )}
-                    </div>
-                  </TreeLeaf>
-                ))}
+                <TreeLeaf>
+                  <table className={cn.el('fields')}>
+                    <tbody>
+                      {equipment.userData.fields.map((field, fieldIndex) => (
+                        <tr
+                          key={fieldIndex}
+                          className={cn.el('equipment')}
+                        >
+                          <td>{field.name}</td>
+                          {field.file ? [
+                            <td key="1">
+                              <div>
+                                <i className="far fa-file fa-fw"></i>
+                                {field.file.name}
+                              </div>
+                              <div>
+                                <i className="fas fa-database fa-fw"></i>
+                                {field.file.headerField}
+                              </div>
+                            </td>,
+                            <td key="2">
+                              <select
+                                value={field.selectedUnitIndex}
+                                onChange={e => this.onUnitChange(e, equipmentIndex, fieldIndex)}
+                              >
+                                <option
+                                  style={{display: 'inline-block'}}
+                                  key={-1}
+                                  value={-1}>choose unit</option>
+                                {field.units.map((unit, index) => (
+                                  <option key={index} value={index}>{unit}</option>
+                                ))}
+                              </select>
+                            </td>,
+                          ] : [
+                            <td
+                              key="1"
+                              className={cn.el('dropZone')}
+                              onDrop={e => this.onDrop(e, equipmentIndex, fieldIndex)}
+                              onDragOver={e => e.preventDefault()}
+                            >empty header field</td>,
+                            <td key="2"></td>
+                          ]}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </TreeLeaf>
               </TreeNode>
             ))}
           </Tree>
@@ -68,31 +87,48 @@ class UploaderPageComponent extends Component {
 
     const fileUpload = (
       <div className={cn.el('fileUpload')}>
+        <h2>Uploaded files</h2>
         <FileUpload
           onUpload={this.onUpload}
         />
 
         {props.fileList.map((file, fileIndex) => (
           <div key={fileIndex}>
-            <div>file name: {file.name}</div>
+            <hr/>
             <div>
-              <div>fields: </div>
+              <i className="far fa-file fa-fw"></i>
+              {file.name}
+            </div>
+            <div>
               <div>
                 {file.fields.map((field, index) => (
                   <div
                     key={index}
+                    className={cn.el('draggable')}
                     data-field-id={file.name + '.' + field}
                     draggable
                     onDragStart={e => {
                       e.dataTransfer.setData('fileName', file.name)
                       e.dataTransfer.setData('field', field)
                     }}
-                  >{field}</div>
+                  >
+                    <i className="fas fa-grip-vertical"></i>
+                    {field}
+                  </div>
                 ))}
               </div>
             </div>
             <div>
-              <div onClick={() => this.setState({openedFileIndex: state.openedFileIndex !== null ? null : fileIndex})}>toggle first rows</div>
+              <div
+                className={cn.el('toggleRows')}
+                onClick={() => this.setState({openedFileIndex: state.openedFileIndex === fileIndex ? null : fileIndex})}
+              >
+                {state.openedFileIndex === fileIndex ?
+                  <i className="fas fa-angle-down fa-fw"></i> :
+                  <i className="fas fa-angle-right fa-fw"></i>
+                }
+                {state.openedFileIndex === fileIndex ? 'hide first rows' : 'show first rows'}
+              </div>
               {fileIndex === state.openedFileIndex && (
                 <table>
                   <thead>
