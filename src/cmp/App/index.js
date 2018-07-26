@@ -19,8 +19,9 @@ export class App extends Component {
           <div className={cn.el('Header')}>
             <div className={cn.el('Header').el('Heading')}>Minealytics</div>
             <NavLink
-              to="/planner"
+              to="/"
               activeClassName="active"
+              exact
             >Planner</NavLink>
             <NavLink
               to="/uploader"

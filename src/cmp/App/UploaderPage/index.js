@@ -82,6 +82,12 @@ class UploaderPageComponent extends Component {
             ))}
           </Tree>
         )}
+        {props.plan && (
+          <button
+            style={{marginTop: '16px'}}
+            onClick={() => console.log(props.plan)}
+          >Save</button>
+        )}
       </div>
     )
 
