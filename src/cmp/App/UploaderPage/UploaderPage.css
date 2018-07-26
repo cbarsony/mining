@@ -1,0 +1,32 @@
+.UploadPage {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 100%;
+}
+
+.UploadPage > * {
+    padding: 16px;
+    margin: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 8px 1px #cccccc;
+}
+
+.UploadPage__plan {
+    grid-column: 1 / 2;
+}
+
+.UploadPage__fileUpload {
+    grid-column: 2 / 3;
+    margin-left: 0;
+}
+
+.UploadPage__dropZone {
+    margin-left: 8px;
+    padding: 8px;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+}
+
+.UploadPage__equipment {
+    margin: 32px 0;
+}

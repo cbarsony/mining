@@ -20,7 +20,8 @@ class PlannerPageComponent extends Component {
     const writer = new draw2d.io.json.Writer()
 
     canvas.onDrop = (node, x, y) => {
-      const equipment = new equipmentType[node.data().type]()
+      const nodeType = node.data().type
+      const equipment = new equipmentType[nodeType]()
 
       const portTop = equipment.createPort('hybrid', new draw2d.layout.locator.TopLocator())
       portTop.on('connect', (c, target) => {
@@ -41,6 +42,49 @@ class PlannerPageComponent extends Component {
       portLeft.on('connect', (c, target) => {
         target.connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
       })
+
+      if(nodeType === 'bin') {
+        equipment.setUserData({
+          fields: [
+            {
+              name: 'volume',
+              units: [
+                'm3',
+                'barrel',
+              ],
+              file: null,
+            },
+            {
+              name: 'mass',
+              units: [
+                'kg',
+                'pound',
+              ],
+              file: null,
+            },
+          ],
+        })
+      }
+      else if(nodeType === 'belt') {
+        equipment.setUserData({
+          fields: [
+            {
+              name: 'speed',
+              units: [
+                'm/s',
+                'km/h',
+              ],
+            },
+            {
+              name: 'temperature',
+              units: [
+                'celsius',
+                'fahrenheit',
+              ],
+            },
+          ],
+        })
+      }
 
       canvas.add(equipment, x, y)
 
