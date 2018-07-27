@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import makeBem from 'bem-cx'
 import {BrowserRouter as Router, Route, NavLink} from 'react-router-dom'
 
-import {} from 'cmp/Equipment/EquipmentSettings'
-
 import './App.css'
 import {PlannerPage} from './PlannerPage'
 import {UploaderPage} from './UploaderPage'

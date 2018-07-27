@@ -12,14 +12,12 @@ import './PlannerPage.css'
 
 const cn = makeBem('PlannerPage')
 const draw2d = window.draw2d
-const $ = window.$
 
 class PlannerPageComponent extends Component {
   componentDidMount() {
-    const canvas = new draw2d.Canvas("canvas")
-    const writer = new draw2d.io.json.Writer()
+    this.canvas = new draw2d.Canvas("canvas")
 
-    canvas.onDrop = (node, x, y) => {
+    this.canvas.onDrop = (node, x, y) => {
       const nodeType = node.data().type
       const equipment = new equipmentType[nodeType]()
 
@@ -86,18 +84,8 @@ class PlannerPageComponent extends Component {
         })
       }
 
-      canvas.add(equipment, x, y)
-
-      writer.marshal(canvas, plan => this.props.savePlan(plan))
-
-      // this.props.addEquipment(equipment)
+      this.canvas.add(equipment, x, y)
     }
-
-    $('#readyButton').on('click', () => {
-      writer.marshal(canvas, function(json) {
-        console.log(json)
-      })
-    })
   }
 
   render() {
@@ -144,7 +132,23 @@ class PlannerPageComponent extends Component {
 
           <hr/>
 
-          <button id="readyButton">Save</button>
+          <button
+            onClick={() => {
+              const writer = new draw2d.io.json.Writer()
+              writer.marshal(this.canvas, plan => {
+                this.props.savePlan(plan)
+              })
+            }}
+          >Save</button>
+
+          <button
+            onClick={() => {
+              const reader = new draw2d.io.json.Reader()
+              window.Bin = equipmentType.bin
+              window.Belt = equipmentType.belt
+              reader.unmarshal(this.canvas, this.props.plan)
+            }}
+          >Read</button>
         </div>
 
         <div className={cn.el('Planner')}>
@@ -168,8 +172,5 @@ class PlannerPageComponent extends Component {
 
 export const PlannerPage = connect(
   state => state,
-  dispatch => ({
-    addEquipment: equipment => dispatch(addEquipment(equipment)),
-    savePlan: plan => dispatch(savePlan(plan)),
-  }),
+  dispatch => ({savePlan: plan => dispatch(savePlan(plan))}),
 )(PlannerPageComponent)

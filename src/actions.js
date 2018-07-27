@@ -3,11 +3,6 @@ export const uploadFile = file => ({
   file,
 })
 
-export const addEquipment = equipment => ({
-  type: 'ADD_EQUIPMENT',
-  equipment,
-})
-
 export const selectEquipment = equipmentId => ({
   type: 'SELECT_EQUIPMENT',
   equipmentId,

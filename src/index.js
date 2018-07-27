@@ -21,12 +21,6 @@ const reducer = (state = initialState, action) => {
           $push: [action.file],
         },
       })
-    case 'ADD_EQUIPMENT':
-      return update(state, {
-        equipmentList: {
-          $push: [action.equipment],
-        },
-      })
     case 'SELECT_EQUIPMENT':
       return update(state, {
         selectedEquipmentId: {

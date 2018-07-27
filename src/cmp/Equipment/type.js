@@ -61,7 +61,7 @@ export const type = {
     getSVG: function(){
       return `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50" height="50">
                 <path d="m 0 0 l 0 50 l 50 0 l 0 -50 z" stroke="#fff" stroke-width="1"></path>
-                <path d="m 0 0 l 0 40 l 25 9 l 25 -9 l 0 -40" stroke="#1B1B1B" stroke-width="2" fill="none"/>
+                <path d="m 0 0 l 0 40 l 25 9 l 25 -9 l 0 -40" stroke="#1B1B1B" stroke-width="2" fill="none"></path>
               </svg>`
     },
   }),

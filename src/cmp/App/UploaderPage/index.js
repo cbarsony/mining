@@ -25,14 +25,19 @@ class UploaderPageComponent extends Component {
         <h2>Equipments</h2>
         {(!!props.plan && !!props.plan.length) && (
           <Tree>
-            {props.plan.map((equipment, equipmentIndex) => (
-              <TreeNode
-                key={equipmentIndex}
-                label={equipment.type + ` (${equipmentIndex + 1})`}
-              >
-                <TreeLeaf>
-                  <table className={cn.el('fields')}>
-                    <tbody>
+            {props.plan.map((equipment, equipmentIndex) => {
+              if(equipment.type !== 'Bin' || equipment.type !== 'Belt') {
+                return null
+              }
+
+              return (
+                <TreeNode
+                  key={equipmentIndex}
+                  label={equipment.type + ` (${equipmentIndex + 1})`}
+                >
+                  <TreeLeaf>
+                    <table className={cn.el('fields')}>
+                      <tbody>
                       {equipment.userData.fields.map((field, fieldIndex) => (
                         <tr
                           key={fieldIndex}
@@ -75,11 +80,12 @@ class UploaderPageComponent extends Component {
                           ]}
                         </tr>
                       ))}
-                    </tbody>
-                  </table>
-                </TreeLeaf>
-              </TreeNode>
-            ))}
+                      </tbody>
+                    </table>
+                  </TreeLeaf>
+                </TreeNode>
+              )
+            })}
           </Tree>
         )}
         {props.plan && (
