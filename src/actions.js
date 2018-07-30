@@ -8,9 +8,19 @@ export const selectEquipment = equipmentId => ({
   equipmentId,
 })
 
+export const openPlan = planIndex => ({
+  type: 'OPEN_PLAN',
+  planIndex,
+})
+
 export const savePlan = plan => ({
   type: 'SAVE_PLAN',
   plan,
+})
+
+export const deletePlan = planIndex => ({
+  type: 'DELETE_PLAN',
+  planIndex,
 })
 
 export const updateEquipmentFile = (equipmentIndex, fieldIndex, fileName, headerField) => ({
