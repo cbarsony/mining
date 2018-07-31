@@ -132,19 +132,14 @@ class PlannerPageComponent extends Component {
 
         <div className={cn.el('Sidebar')}>
 
-          <div>{state.plan.name}</div>
+          <div>Plan name: {state.selectedPlanIndex >= 0 ? props.planList[state.selectedPlanIndex].name : state.plan.name}</div>
 
           <div>
             <button
               onClick={this.onSavePlan}
             >Save plan</button>
+            {props.planList.length > 0 && <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open plan</button>}
           </div>
-
-          {props.planList.length > 0 && (
-            <div>
-              <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open plan</button>
-            </div>
-          )}
 
           <hr/>
 

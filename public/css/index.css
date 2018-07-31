@@ -49,3 +49,7 @@ body {
 tr, td, th {
     padding: 2px;
 }
+
+button {
+    margin-right: 8px;
+}

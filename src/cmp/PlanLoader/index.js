@@ -9,7 +9,7 @@ const PlanLoaderComponent = props => (
     <tbody>
     {props.planList.map((plan, index) => (
       <tr key={index}>
-        <td>{plan.name}</td>
+        <td>Plan name: {plan.name}</td>
         {index === props.selectedPlanIndex ?
           <td colSpan="2">(opened)</td> :
           ([
