@@ -1,6 +1,3 @@
-import {store} from 'index'
-import {selectEquipment} from 'actions'
-
 const draw2d = window.draw2d
 const $ = window.$
 
@@ -12,7 +9,6 @@ const SelectionMenuPolicy = draw2d.policy.figure.SelectionPolicy.extend({
   },
   onSelect: function(canvas, figure, isPrimarySelection) {
     this._super(canvas, figure, isPrimarySelection)
-    store.dispatch(selectEquipment(figure.id))
 
     if (this.overlay === null) {
       this.overlay = $('#my_overlay')

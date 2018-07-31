@@ -3,7 +3,6 @@ import update from 'immutability-helper'
 const initialState = {
   fileList: [],
   planList: JSON.parse(localStorage.getItem('planList')) || [],
-  selectedPlanIndex: -1,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -14,20 +13,6 @@ export const reducer = (state = initialState, action) => {
       return update(state, {
         fileList: {
           $push: [action.file],
-        },
-      })
-
-    case 'SELECT_EQUIPMENT':
-      return update(state, {
-        selectedEquipmentId: {
-          $set: action.equipmentId,
-        },
-      })
-
-    case 'OPEN_PLAN':
-      return update(state, {
-        selectedPlanIndex: {
-          $set: action.planIndex,
         },
       })
 

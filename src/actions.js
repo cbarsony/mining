@@ -3,16 +3,6 @@ export const uploadFile = file => ({
   file,
 })
 
-export const selectEquipment = equipmentId => ({
-  type: 'SELECT_EQUIPMENT',
-  equipmentId,
-})
-
-export const openPlan = planIndex => ({
-  type: 'OPEN_PLAN',
-  planIndex,
-})
-
 export const savePlan = (planIndex, plan) => ({
   type: 'SAVE_PLAN',
   planIndex,

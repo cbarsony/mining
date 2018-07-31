@@ -3,7 +3,7 @@ import makeBem from 'bem-cx'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 
-import {openPlan, savePlan, createPlan, deletePlan} from 'actions'
+import {savePlan, createPlan, deletePlan} from 'actions'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 import {Equipment} from 'cmp/Equipment'
 import {type as equipmentType} from 'cmp/Equipment/type'
@@ -21,6 +21,7 @@ class PlannerPageComponent extends Component {
       name: 'New Plan',
       data: [],
     },
+    selectedPlanIndex: -1,
     isPlanUnsaved: false,
     isOpenPlanModalVisible: false,
   }
@@ -116,7 +117,7 @@ class PlannerPageComponent extends Component {
               {props.planList.map((plan, index) => (
                 <tr key={index}>
                   <td>{plan.name}</td>
-                  {index === props.selectedPlanIndex ?
+                  {index === state.selectedPlanIndex ?
                     <td colSpan="2">(opened)</td> :
                     ([
                       <td key="1">
@@ -133,9 +134,9 @@ class PlannerPageComponent extends Component {
                           window.Belt = equipmentType.belt
                           reader.unmarshal(this.canvas, plan.data)
 
-                          props.openPlan(index)
                           this.setState({
                             plan,
+                            selectedPlanIndex: index,
                             isOpenPlanModalVisible: false,
                           })
                         }}>Open</button>
@@ -239,8 +240,8 @@ class PlannerPageComponent extends Component {
    * docs/PlannerPage/onSavePlan.puml
    */
   onSavePlan = () => {
-    let plan = this.props.planList[this.props.selectedPlanIndex]
-    let planIndex = this.props.selectedPlanIndex
+    let plan = this.props.planList[this.state.selectedPlanIndex]
+    let planIndex = this.state.selectedPlanIndex
 
     if(!plan) {
       const planName = window.prompt('Enter Plan\'s name', this.state.plan.name)
@@ -277,45 +278,10 @@ class PlannerPageComponent extends Component {
       })
     }
   }
-
-  _getPlanListElementCommand = index => {
-    if(index === this.state.selectedPlanIndex) {
-      if(this.state.isSelectedPlanUnsaved) {
-        return (
-          <button
-            onClick={() => {
-              const writer = new draw2d.io.json.Writer()
-              writer.marshal(this.canvas, plan => {
-                this.props.savePlan(index, plan)
-                this.setState({isSelectedPlanUnsaved: false})
-              })
-            }}
-          >Save</button>
-        )
-      }
-      else {
-        return <span>(saved)</span>
-      }
-    }
-    else {
-      return <button onClick={() => {
-        if(this.state.isSelectedPlanUnsaved) {
-          if(window.confirm('Plan is unsaved. Proceed anyways?')) {
-            this.setState({selectedPlanIndex: index})
-          }
-        }
-        else {
-          this.setState({selectedPlanIndex: index})
-        }
-      }}>Load</button>
-    }
-  }
 }
 
 PlannerPageComponent.propTypes = {
   planList: PropTypes.array.isRequired,
-  selectedPlanIndex: PropTypes.number.isRequired,
-  openPlan: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
   createPlan: PropTypes.func.isRequired,
   deletePlan: PropTypes.func.isRequired,
@@ -327,7 +293,6 @@ export const PlannerPage = connect(
     selectedPlanIndex: state.selectedPlanIndex,
   }),
   dispatch => ({
-    openPlan: planIndex => dispatch(openPlan(planIndex)),
     savePlan: (planIndex, plan) => dispatch(savePlan(planIndex, plan)),
     createPlan: plan => dispatch(createPlan(plan)),
     deletePlan: (planIndex, plan) => dispatch(deletePlan(planIndex)),

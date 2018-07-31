@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import _ from 'lodash'
 import makeBem from 'bem-cx'
 
 import {uploadFile, updateEquipmentFile, updateUnit} from 'actions'
 import {FileUpload} from 'cmp/FileUpload'
+import {Modal} from 'cmp/Modal'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 
 import './UploaderPage.css'
@@ -13,7 +15,8 @@ const cn = makeBem('UploadPage')
 
 class UploaderPageComponent extends Component {
   state = {
-    openedFileIndex: null,
+    openedFileIndex: -1,
+    openedPlanIndex: -1,
   }
 
   render() {
@@ -192,8 +195,15 @@ class UploaderPageComponent extends Component {
   }
 }
 
+UploaderPageComponent.propTypes = {
+  fileList: PropTypes.array.isRequired,
+  uploadFile: PropTypes.func.isRequired,
+  updateEquipmentFile: PropTypes.func.isRequired,
+  updateUnit: PropTypes.func.isRequired,
+}
+
 export const UploaderPage = connect(
-  state => state,
+  state => ({fileList: state.fileList}),
   dispatch => ({
     uploadFile: file => dispatch(uploadFile(file)),
     updateEquipmentFile: (equipmentIndex, fieldIndex, fileName, headerField) => dispatch(updateEquipmentFile(
