@@ -1,35 +1,51 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 
 import {Modal} from 'cmp/Modal'
 
-export class EquipmentSettings extends Component {
+class EquipmentSettingsComponent extends Component {
   state = {
     isModalVisible: false,
   }
 
   render() {
-    // const props = this.props
+    const props = this.props
     const state = this.state
+    const equipmentContainer = document.getElementById('equipment_settings')
+    const equipmentId = equipmentContainer.dataset.equipmentId
 
-    return ReactDOM.createPortal(
-      <div>
+    if(!equipmentId) {
+      return null
+    }
+
+    const equipment = props.planList[props.selectedPlanIndex].data.find(plan => plan.data.id === equipmentId)
+
+    return equipment ? ReactDOM.createPortal(
+      <div className="EquipmentSettings">
+
+        <div>{equipment.type}</div>
+        <button onClick={() => this.setState({isModalVisible: true})}>settings</button>
+
         <Modal
           isVisible={state.isModalVisible}
           onClose={() => this.setState({isModalVisible: false})}
         >
           <div>modal content...</div>
         </Modal>
-        <button onClick={() => this.setState({isModalVisible: true})}>settings</button>
+
       </div>,
-      document.getElementById('my_overlay'),
-    )
+      document.getElementById('equipment_settings'),
+    ) : null
   }
 }
 
-EquipmentSettings.propTypes = {
-  fileList: PropTypes.array.isRequired,
-  equipment: PropTypes.object.isRequired,
-  save: PropTypes.func.isRequired,
+EquipmentSettingsComponent.propTypes = {
+  planList: PropTypes.array.isRequired,
+  selectedPlanIndex: PropTypes.number.isRequired,
 }
+
+export const EquipmentSettings = connect(
+  state => ({planList: state.planList})
+)(EquipmentSettingsComponent)

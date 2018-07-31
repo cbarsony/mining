@@ -11,7 +11,9 @@ const SelectionMenuPolicy = draw2d.policy.figure.SelectionPolicy.extend({
     this._super(canvas, figure, isPrimarySelection)
 
     if (this.overlay === null) {
-      this.overlay = $('#my_overlay')
+      const equipmentSettingsContainer = $('#equipment_settings')
+      equipmentSettingsContainer[0].dataset.equipmentId = figure.id
+      this.overlay = equipmentSettingsContainer
       $('#canvas').append(this.overlay)
     }
     this.posOverlay(figure);

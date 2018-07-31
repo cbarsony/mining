@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import {savePlan, createPlan, deletePlan} from 'actions'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 import {Equipment} from 'cmp/Equipment'
+import {EquipmentSettings} from 'cmp/Equipment/EquipmentSettings'
 import {type as equipmentType} from 'cmp/Equipment/type'
 import {Modal} from 'cmp/Modal'
 import {PlanLoader} from 'cmp/PlanLoader'
@@ -206,6 +207,8 @@ class PlannerPageComponent extends Component {
         <div className={cn.el('Planner')}>
           <div id="canvas"></div>
         </div>
+
+        {state.selectedPlanIndex >= 0 && <EquipmentSettings selectedPlanIndex={state.selectedPlanIndex}/>}
 
       </div>
     )
