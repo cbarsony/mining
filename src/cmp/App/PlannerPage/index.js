@@ -2,9 +2,8 @@ import React, {Component} from 'react'
 import makeBem from 'bem-cx'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import update from 'immutability-helper'
 
-import {openPlan, savePlan, deletePlan} from 'actions'
+import {openPlan, savePlan, createPlan, deletePlan} from 'actions'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 import {Equipment} from 'cmp/Equipment'
 import {type as equipmentType} from 'cmp/Equipment/type'
@@ -14,10 +13,14 @@ import './PlannerPage.css'
 
 const cn = makeBem('PlannerPage')
 const draw2d = window.draw2d
+const writer = new draw2d.io.json.Writer()
 
 class PlannerPageComponent extends Component {
   state = {
-    plan: this.props.planList[this.props.selectedPlanIndex],
+    plan: {
+      name: 'New Plan',
+      data: [],
+    },
     isPlanUnsaved: false,
     isOpenPlanModalVisible: false,
   }
@@ -118,6 +121,13 @@ class PlannerPageComponent extends Component {
                     ([
                       <td key="1">
                         <button onClick={() => {
+                          if(state.isPlanUnsaved) {
+                            if(!window.confirm(`Continue without saving "${state.plan.name}"?`)) {
+                              return
+                            }
+                          }
+
+                          this.canvas.clear()
                           const reader = new draw2d.io.json.Reader()
                           window.Bin = equipmentType.bin
                           window.Belt = equipmentType.belt
@@ -146,25 +156,19 @@ class PlannerPageComponent extends Component {
 
         <div className={cn.el('Sidebar')}>
 
+          <div>{state.plan.name}</div>
+
           <div>
-            <span>Plan name: {state.plan.name}</span>
             <button
-              onClick={this._onEditButtonClick}
-              style={{float: 'right'}}
-            >Edit</button>
+              onClick={this.onSavePlan}
+            >Save plan</button>
           </div>
 
-          {state.isPlanUnsaved && (
+          {props.planList.length > 0 && (
             <div>
-              <button
-                onClick={this._onSavePlanClick}
-              >Save plan</button>
+              <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open plan</button>
             </div>
           )}
-
-          <div>
-            <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open plan</button>
-          </div>
 
           <hr/>
 
@@ -231,33 +235,47 @@ class PlannerPageComponent extends Component {
     )
   }
 
-  _onEditButtonClick = () => {
-    const planName = window.prompt('Please enter new Plan name', this.state.plan.name)
+  /**
+   * docs/PlannerPage/onSavePlan.puml
+   */
+  onSavePlan = () => {
+    let plan = this.props.planList[this.props.selectedPlanIndex]
+    let planIndex = this.props.selectedPlanIndex
 
-    if(planName) {
-      this.setState(state => update(state, {
-        plan: {
-          name: {
-            $set: planName,
-          },
-        },
-        isPlanUnsaved: {
-          $set: true,
-        },
-      }))
+    if(!plan) {
+      const planName = window.prompt('Enter Plan\'s name', this.state.plan.name)
+
+      if(!planName) {
+        return
+      }
+
+      planIndex = this.props.planList.findIndex(plan => plan.name === planName)
+      plan = this.props.planList[planIndex]
+
+      if(!plan) {
+        writer.marshal(this.canvas, data => {
+          this.props.createPlan({
+            name: planName,
+            data,
+          })
+          this.setState({isPlanUnsaved: false})
+        })
+        return
+      }
     }
-  }
 
-  _onSavePlanClick = () => {
-    const writer = new draw2d.io.json.Writer()
-
-    writer.marshal(this.canvas, data => {
-      this.props.savePlan({
-        name: this.state.plan.name,
-        data,
+    if(window.confirm(`Overwrite ${plan.name}?`)) {
+      writer.marshal(this.canvas, data => {
+        this.props.savePlan(
+          planIndex,
+          {
+            name: plan.name,
+            data,
+          },
+        )
+        this.setState({isPlanUnsaved: false})
       })
-      this.setState({isPlanUnsaved: false})
-    })
+    }
   }
 
   _getPlanListElementCommand = index => {
@@ -299,6 +317,7 @@ PlannerPageComponent.propTypes = {
   selectedPlanIndex: PropTypes.number.isRequired,
   openPlan: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
+  createPlan: PropTypes.func.isRequired,
   deletePlan: PropTypes.func.isRequired,
 }
 
@@ -308,8 +327,9 @@ export const PlannerPage = connect(
     selectedPlanIndex: state.selectedPlanIndex,
   }),
   dispatch => ({
-    openPlan: (planIndex) => dispatch(openPlan(planIndex)),
-    savePlan: (planIndex, data) => dispatch(savePlan(planIndex, data)),
-    deletePlan: (planIndex, data) => dispatch(deletePlan(planIndex)),
+    openPlan: planIndex => dispatch(openPlan(planIndex)),
+    savePlan: (planIndex, plan) => dispatch(savePlan(planIndex, plan)),
+    createPlan: plan => dispatch(createPlan(plan)),
+    deletePlan: (planIndex, plan) => dispatch(deletePlan(planIndex)),
   }),
 )(PlannerPageComponent)

@@ -1,16 +1,9 @@
 import update from 'immutability-helper'
 
-const planList = JSON.parse(localStorage.getItem('plan'))
-
-planList.unshift({
-  name: 'New plan',
-  data: [],
-})
-
 const initialState = {
   fileList: [],
-  planList,
-  selectedPlanIndex: 0,
+  planList: JSON.parse(localStorage.getItem('planList')) || [],
+  selectedPlanIndex: -1,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -23,31 +16,47 @@ export const reducer = (state = initialState, action) => {
           $push: [action.file],
         },
       })
+
     case 'SELECT_EQUIPMENT':
       return update(state, {
         selectedEquipmentId: {
           $set: action.equipmentId,
         },
       })
+
     case 'OPEN_PLAN':
       return update(state, {
         selectedPlanIndex: {
           $set: action.planIndex,
         },
       })
+
     case 'SAVE_PLAN':
       newState = update(state, {
         planList: {
-          [state.selectedPlanIndex]: {
+          [action.planIndex]: {
             $set: action.plan,
           },
         },
       })
-      localStorage.setItem('plan', JSON.stringify(newState.planList))
+      localStorage.setItem('planList', JSON.stringify(newState.planList))
       if(newState) {
         alert('Plan saved')
       }
       return newState
+
+    case 'CREATE_PLAN':
+      newState = update(state, {
+        planList: {
+          $push: [action.plan],
+        },
+      })
+      localStorage.setItem('planList', JSON.stringify(newState.planList))
+      if(newState) {
+        alert('Plan saved')
+      }
+      return newState
+
     case 'DELETE_PLAN':
       const deletedPlanName = state.planList[action.planIndex].name
 
@@ -56,11 +65,12 @@ export const reducer = (state = initialState, action) => {
           $splice: [[action.planIndex, 1]],
         },
       })
-      localStorage.setItem('plan', JSON.stringify(newState.planList))
+      localStorage.setItem('planList', JSON.stringify(newState.planList))
       if(newState) {
         alert(`Plan "${deletedPlanName}" deleted`)
       }
       return newState
+
     case 'UPDATE_EQUIPMENT_FILE':
       return update(state, {
         plan: {
@@ -80,6 +90,7 @@ export const reducer = (state = initialState, action) => {
           }
         }
       })
+
     case 'UPDATE_UNIT':
       return update(state, {
         plan: {
@@ -96,6 +107,7 @@ export const reducer = (state = initialState, action) => {
           }
         }
       })
+
     default:
       return state
   }

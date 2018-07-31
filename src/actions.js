@@ -13,8 +13,14 @@ export const openPlan = planIndex => ({
   planIndex,
 })
 
-export const savePlan = plan => ({
+export const savePlan = (planIndex, plan) => ({
   type: 'SAVE_PLAN',
+  planIndex,
+  plan,
+})
+
+export const createPlan = plan => ({
+  type: 'CREATE_PLAN',
   plan,
 })
 

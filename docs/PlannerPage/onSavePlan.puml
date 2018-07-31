@@ -1,0 +1,22 @@
+@startuml
+
+start
+
+if (Plan Exists) then (1)
+else (0)
+    :Enter name/
+    if (Name exists) then (1)
+    else (0)
+        :Create Plan;
+        stop
+    endif
+endif
+if (Confirm overwrite) then (1)
+    :Save Plan;
+else (0)
+    stop
+endif
+
+stop
+
+@enduml
