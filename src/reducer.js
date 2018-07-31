@@ -58,39 +58,47 @@ export const reducer = (state = initialState, action) => {
 
     case 'UPDATE_EQUIPMENT_FILE':
       return update(state, {
-        plan: {
-          [action.equipmentIndex]: {
-            userData: {
-              fields: {
-                [action.fieldIndex]: {
-                  file: {
-                    $set: {
-                      name: action.fileName,
-                      headerField: action.headerField,
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        planList: {
+          [action.planIndex]: {
+            data: {
+              [action.equipmentIndex]: {
+                userData: {
+                  fields: {
+                    [action.fieldIndex]: {
+                      file: {
+                        $set: {
+                          name: action.fileName,
+                          headerField: action.headerField,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       })
 
     case 'UPDATE_UNIT':
       return update(state, {
-        plan: {
-          [action.equipmentIndex]: {
-            userData: {
-              fields: {
-                [action.fieldIndex]: {
-                  selectedUnitIndex: {
-                    $set: action.unitIndex,
-                  }
-                }
-              }
-            }
-          }
-        }
+        planList: {
+          [action.planIndex]: {
+            data: {
+              [action.equipmentIndex]: {
+                userData: {
+                  fields: {
+                    [action.fieldIndex]: {
+                      selectedUnitIndex: {
+                        $set: action.unitIndex,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       })
 
     default:

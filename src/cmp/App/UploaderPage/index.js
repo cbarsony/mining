@@ -6,8 +6,9 @@ import makeBem from 'bem-cx'
 
 import {uploadFile, updateEquipmentFile, updateUnit} from 'actions'
 import {FileUpload} from 'cmp/FileUpload'
-import {Modal} from 'cmp/Modal'
 import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
+import {Modal} from 'cmp/Modal'
+import {PlanLoader} from 'cmp/PlanLoader'
 
 import './UploaderPage.css'
 
@@ -17,90 +18,116 @@ class UploaderPageComponent extends Component {
   state = {
     openedFileIndex: -1,
     openedPlanIndex: -1,
+    isOpenPlanModalVisible: false,
   }
 
   render() {
     const props = this.props
     const state = this.state
+    const plan = props.planList[state.openedPlanIndex]
+    const equipments = plan ? plan.data : []
 
-    const plan = (
+    const planColumn = (
       <div className={cn.el('plan')}>
-        <h2>Equipments</h2>
-        {(!!props.plan && !!props.plan.length) && (
-          <Tree>
-            {props.plan.map((equipment, equipmentIndex) => {
-              if(equipment.type !== 'Bin' || equipment.type !== 'Belt') {
-                return null
-              }
 
-              return (
-                <TreeNode
-                  key={equipmentIndex}
-                  label={equipment.type + ` (${equipmentIndex + 1})`}
-                >
-                  <TreeLeaf>
-                    <table className={cn.el('fields')}>
-                      <tbody>
-                      {equipment.userData.fields.map((field, fieldIndex) => (
-                        <tr
-                          key={fieldIndex}
-                          className={cn.el('equipment')}
-                        >
-                          <td>{field.name}</td>
-                          {field.file ? [
-                            <td key="1">
-                              <div>
-                                <i className="far fa-file fa-fw"></i>
-                                {field.file.name}
-                              </div>
-                              <div>
-                                <i className="fas fa-database fa-fw"></i>
-                                {field.file.headerField}
-                              </div>
-                            </td>,
-                            <td key="2">
-                              <select
-                                value={field.selectedUnitIndex}
-                                onChange={e => this.onUnitChange(e, equipmentIndex, fieldIndex)}
-                              >
-                                <option
-                                  style={{display: 'inline-block'}}
-                                  key={-1}
-                                  value={-1}>choose unit</option>
-                                {field.units.map((unit, index) => (
-                                  <option key={index} value={index}>{unit}</option>
-                                ))}
-                              </select>
-                            </td>,
-                          ] : [
-                            <td
-                              key="1"
-                              className={cn.el('dropZone')}
-                              onDrop={e => this.onDrop(e, equipmentIndex, fieldIndex)}
-                              onDragOver={e => e.preventDefault()}
-                            >empty header field</td>,
-                            <td key="2"></td>
-                          ]}
-                        </tr>
-                      ))}
-                      </tbody>
-                    </table>
-                  </TreeLeaf>
-                </TreeNode>
-              )
-            })}
-          </Tree>
+        <Modal
+          isVisible={state.isOpenPlanModalVisible}
+          onClose={() => this.setState({isOpenPlanModalVisible: false})}
+        >
+          <PlanLoader
+            selectedPlanIndex={state.selectedPlanIndex}
+            isPlanUnsaved={state.isPlanUnsaved}
+            openPlan={openedPlanIndex => {
+              this.setState({
+                openedPlanIndex,
+                isOpenPlanModalVisible: false,
+              })
+            }}
+          />
+        </Modal>
+
+        <h2>Equipments</h2>
+
+        <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open Plan</button>
+
+        {(!!equipments && !!equipments.length) && (
+          <div>
+            <div>{plan.name}</div>
+            <Tree>
+              {equipments.map((equipment, equipmentIndex) => {
+                if(equipment.type !== 'Bin' && equipment.type !== 'Belt') {
+                  return null
+                }
+
+                return (
+                  <TreeNode
+                    key={equipmentIndex}
+                    label={equipment.type + ` (${equipmentIndex + 1})`}
+                  >
+                    <TreeLeaf>
+                      <table className={cn.el('fields')}>
+                        <tbody>
+                        {equipment.userData.fields.map((field, fieldIndex) => (
+                          <tr
+                            key={fieldIndex}
+                            className={cn.el('equipment')}
+                          >
+                            <td>{field.name}</td>
+                            {field.file ? [
+                              <td key="1">
+                                <div>
+                                  <i className="far fa-file fa-fw"></i>
+                                  {field.file.name}
+                                </div>
+                                <div>
+                                  <i className="fas fa-database fa-fw"></i>
+                                  {field.file.headerField}
+                                </div>
+                              </td>,
+                              <td key="2">
+                                <select
+                                  value={field.selectedUnitIndex}
+                                  onChange={e => this.onUnitChange(e, equipmentIndex, fieldIndex)}
+                                >
+                                  <option
+                                    style={{display: 'inline-block'}}
+                                    key={-1}
+                                    value={-1}>choose unit</option>
+                                  {field.units.map((unit, index) => (
+                                    <option key={index} value={index}>{unit}</option>
+                                  ))}
+                                </select>
+                              </td>,
+                            ] : [
+                              <td
+                                key="1"
+                                className={cn.el('dropZone')}
+                                onDrop={e => this.onDrop(e, equipmentIndex, fieldIndex)}
+                                onDragOver={e => e.preventDefault()}
+                              >empty header field</td>,
+                              <td key="2"></td>
+                            ]}
+                          </tr>
+                        ))}
+                        </tbody>
+                      </table>
+                    </TreeLeaf>
+                  </TreeNode>
+                )
+              })}
+            </Tree>
+          </div>
         )}
-        {props.plan && (
+        {equipments && (
           <button
             style={{marginTop: '16px'}}
-            onClick={() => console.log(props.plan)}
+            onClick={() => console.log(equipments)}
           >Save</button>
         )}
       </div>
     )
 
-    const fileUpload = (
+    const fileUploadColumn = (
       <div className={cn.el('fileUpload')}>
         <h2>Uploaded files</h2>
         <FileUpload
@@ -173,8 +200,8 @@ class UploaderPageComponent extends Component {
 
     return (
       <div className={cn}>
-        {plan}
-        {fileUpload}
+        {planColumn}
+        {fileUploadColumn}
       </div>
     )
   }
@@ -186,33 +213,39 @@ class UploaderPageComponent extends Component {
   onDrop = (e, equipmentIndex, fieldIndex) => {
     const fileName = e.dataTransfer.getData('fileName')
     const headerField = e.dataTransfer.getData('field')
-    this.props.updateEquipmentFile(equipmentIndex, fieldIndex, fileName, headerField)
+    this.props.updateEquipmentFile(this.state.openedPlanIndex, equipmentIndex, fieldIndex, fileName, headerField)
   }
 
   onUnitChange = (e, equipmentIndex, fieldIndex) => {
     const unitIndex = Number(e.target.value)
-    this.props.updateUnit(equipmentIndex, fieldIndex, unitIndex)
+    this.props.updateUnit(this.state.openedPlanIndex, equipmentIndex, fieldIndex, unitIndex)
   }
 }
 
 UploaderPageComponent.propTypes = {
   fileList: PropTypes.array.isRequired,
+  planList: PropTypes.array.isRequired,
   uploadFile: PropTypes.func.isRequired,
   updateEquipmentFile: PropTypes.func.isRequired,
   updateUnit: PropTypes.func.isRequired,
 }
 
 export const UploaderPage = connect(
-  state => ({fileList: state.fileList}),
+  state => ({
+    fileList: state.fileList,
+    planList: state.planList,
+  }),
   dispatch => ({
     uploadFile: file => dispatch(uploadFile(file)),
-    updateEquipmentFile: (equipmentIndex, fieldIndex, fileName, headerField) => dispatch(updateEquipmentFile(
+    updateEquipmentFile: (planIndex, equipmentIndex, fieldIndex, fileName, headerField) => dispatch(updateEquipmentFile(
+      planIndex,
       equipmentIndex,
       fieldIndex,
       fileName,
       headerField,
     )),
-    updateUnit: (equipmentIndex, fieldIndex, unitIndex) => dispatch(updateUnit(
+    updateUnit: (planIndex, equipmentIndex, fieldIndex, unitIndex) => dispatch(updateUnit(
+      planIndex,
       equipmentIndex,
       fieldIndex,
       unitIndex,

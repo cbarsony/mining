@@ -8,11 +8,13 @@ import {Tree, TreeNode, TreeLeaf} from 'cmp/Tree'
 import {Equipment} from 'cmp/Equipment'
 import {type as equipmentType} from 'cmp/Equipment/type'
 import {Modal} from 'cmp/Modal'
+import {PlanLoader} from 'cmp/PlanLoader'
 
 import './PlannerPage.css'
 
 const cn = makeBem('PlannerPage')
 const draw2d = window.draw2d
+const reader = new draw2d.io.json.Reader()
 const writer = new draw2d.io.json.Writer()
 
 class PlannerPageComponent extends Component {
@@ -112,47 +114,20 @@ class PlannerPageComponent extends Component {
           isVisible={state.isOpenPlanModalVisible}
           onClose={() => this.setState({isOpenPlanModalVisible: false})}
         >
-          <table>
-            <tbody>
-              {props.planList.map((plan, index) => (
-                <tr key={index}>
-                  <td>{plan.name}</td>
-                  {index === state.selectedPlanIndex ?
-                    <td colSpan="2">(opened)</td> :
-                    ([
-                      <td key="1">
-                        <button onClick={() => {
-                          if(state.isPlanUnsaved) {
-                            if(!window.confirm(`Continue without saving "${state.plan.name}"?`)) {
-                              return
-                            }
-                          }
-
-                          this.canvas.clear()
-                          const reader = new draw2d.io.json.Reader()
-                          window.Bin = equipmentType.bin
-                          window.Belt = equipmentType.belt
-                          reader.unmarshal(this.canvas, plan.data)
-
-                          this.setState({
-                            plan,
-                            selectedPlanIndex: index,
-                            isOpenPlanModalVisible: false,
-                          })
-                        }}>Open</button>
-                      </td>,
-                      <td key="2">
-                        <button onClick={() => {
-                          if(window.confirm(`Delete "${props.planList[index].name}" ?`)) {
-                            props.deletePlan(index)
-                          }
-                        }}>Delete</button>
-                      </td>,
-                    ])}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <PlanLoader
+            selectedPlanIndex={state.selectedPlanIndex}
+            isPlanUnsaved={state.isPlanUnsaved}
+            openPlan={selectedPlanIndex => {
+              window.Bin = equipmentType.bin
+              window.Belt = equipmentType.belt
+              this.canvas.clear()
+              reader.unmarshal(this.canvas, props.planList[selectedPlanIndex].data)
+              this.setState({
+                selectedPlanIndex,
+                isOpenPlanModalVisible: false,
+              })
+            }}
+          />
         </Modal>
 
         <div className={cn.el('Sidebar')}>
@@ -288,13 +263,10 @@ PlannerPageComponent.propTypes = {
 }
 
 export const PlannerPage = connect(
-  state => ({
-    planList: state.planList,
-    selectedPlanIndex: state.selectedPlanIndex,
-  }),
+  state => ({planList: state.planList}),
   dispatch => ({
     savePlan: (planIndex, plan) => dispatch(savePlan(planIndex, plan)),
     createPlan: plan => dispatch(createPlan(plan)),
-    deletePlan: (planIndex, plan) => dispatch(deletePlan(planIndex)),
+    deletePlan: planIndex => dispatch(deletePlan(planIndex)),
   }),
 )(PlannerPageComponent)

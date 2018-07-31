@@ -19,16 +19,18 @@ export const deletePlan = planIndex => ({
   planIndex,
 })
 
-export const updateEquipmentFile = (equipmentIndex, fieldIndex, fileName, headerField) => ({
+export const updateEquipmentFile = (planIndex, equipmentIndex, fieldIndex, fileName, headerField) => ({
   type: 'UPDATE_EQUIPMENT_FILE',
+  planIndex,
   equipmentIndex,
   fieldIndex,
   fileName,
   headerField,
 })
 
-export const updateUnit = (equipmentIndex, fieldIndex, unitIndex) => ({
+export const updateUnit = (planIndex, equipmentIndex, fieldIndex, unitIndex) => ({
   type: 'UPDATE_UNIT',
+  planIndex,
   equipmentIndex,
   fieldIndex,
   unitIndex,
