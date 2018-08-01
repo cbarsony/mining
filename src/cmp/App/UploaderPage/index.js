@@ -48,7 +48,7 @@ class UploaderPageComponent extends Component {
 
         <h2>Equipments</h2>
 
-        <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open Plan</button>
+        {props.planList.length > 0 && <button onClick={() => this.setState({isOpenPlanModalVisible: true})}>Open Plan</button>}
 
         {(!!equipments && !!equipments.length) && (
           <div>
